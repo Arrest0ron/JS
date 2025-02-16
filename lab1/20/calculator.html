@@ -8,15 +8,32 @@
 </head>
 
 <body>
-  <div> <!-- div - это базовый html-контейнер, который может содержать в себе другие html-элементы. -->
+  <!-- <header class="page-top"  > -->
+    
+    <ul style="display: inline-block;">
+        <img src="spotify-black.png" alt="Spotify" style="height: 60px;">
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+      <li>Потратить миллион</li>
+      <li>|</li>
+      <li>Не получить ответ</li>
+    </ul>
+
+    
+
+  <!-- </header> -->
+  <div class="middle-part"> <!-- div - это базовый html-контейнер, который может содержать в себе другие html-элементы. -->
     
     <!-- блок с экраном калькулятора, где будет выводиться результат вычислений. -->
-    <div id="result" class="result">
-        0
-      </div>
+
 
     <!-- блок с кнопками калькулятора. -->
-    <div>
+    <div style="display: inline-block;">
+      <button id="result" class="result"></button>
       <!--горизонтальный ряд из четырех кнопок-->
       <div>  
         <button id="btn_op_clear" class="my-btn secondary">C</button>    <!-- про тэг кнопки: https://www.w3schools.com/tags/tag_button.asp -->
@@ -52,24 +69,27 @@
         <button id="btn_op_equal" class="my-btn primary execute">=</button>
       </div>
     </div>
+    <img src="https://www-growth.scdn.co/static/yna/tablet_bananas_yna.png" style="margin-left: 100px;">
     <div>
-      
-      <h2 class="me">
-        Лабораторную работу выполнил Мушкарин Дмитрий Евгеньевич
-      </h2>
-      <button id="btn_change_theme" class="my-btn gitref"><a href = "https://github.com/Arrest0ron"  target="_blank">Git!</a></button>
-      <button id="btn_change_theme" class="my-btn execute">тема</button>
-      
+<footer style="text-align: left; background-color: black; margin-top: 120px;">
+  <img src="spotify_black.png" alt="Spotify" style="width: 90px;">
+  <ul>
+    <li>
+      <a href = "https://github.com/Arrest0ron"  target="_blank">Github</a>
+    </li>
+    <li>
+      <a href = "https://github.com/Arrest0ron/JS/tree/main/lab1" target="_blank">Source</a>
+    </li>
+    <li>
+      © 2025 Spotify Calculator
+    </li>
 
+  </ul>
+</footer>
+    </details>
     </div>
-    <div>
-      <select id="fruits" name="|Режим работы|">
-        <option>Обработка ошибок</option>
-        <option>Игнорирование ошибок</option>
-        <option>0 Mode</option>
-        <option>NaN Mode</option>
-      </select>
-    </div>
+
   </div>
+   
 </body>
 </html>

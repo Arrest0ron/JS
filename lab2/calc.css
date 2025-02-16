@@ -1,0 +1,124 @@
+
+/* опишем базовый стиль кнопки калькулятора */
+.my-btn { 
+    font-style: bold;
+    margin-right: 5px;           /* задаем отступ от кнопки справа */
+    margin-top: 5px;             /* задаем отступ от кнопки сверху*/
+    width: 90px;                 /* задаем ширину кнопки */
+    height: 90px;                /* задаем высоту кнопки */
+    border-radius: 45%;          /*округляем кнопку */
+    border: none;                /* отключаем обводку */
+    background: hsl(0, 0%, 100%);         /* задаем серый цвет кнопки */
+    color: #000000;                /* задаем белый цвет текста внутри кнопки */
+    font-size: 2.2rem;           /* увеличим размер шрифта */
+    font-family:Verdana, Geneva, Tahoma, sans-serif; /* сменим шрифт */
+    cursor: pointer;             /* при наведении на кнопку курсор будет изменен
+                                    со стрелки на 'указательный палец' */
+    user-select: none;           /* отключаем возможность выделить текст внутри кнопки */
+  } 
+  
+  .gitref 
+  {
+    width: 120px;
+  }
+
+  li 
+  {
+  
+    color: white;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-style: bold;
+    font-weight: 1000;
+    /* columns: 1; */
+    height: 10px;
+    list-style: none;
+    display: inline-block;
+    margin-right: 40px;
+    margin-left: 50px;
+    /* margin-top: 20%; */
+  }
+
+  
+  /* hover - это состояние элемента, когда на него наведен курсор */
+  .my-btn:hover {
+    color: rgb(48, 200, 6); /* при наведение курсора на кнопку, она будет окрашена в серый */
+  }
+  
+  /* active - это состояние активации элемента. В случае кнопки - нажатие на нее */
+  .my-btn:active {
+    filter: brightness(130%); /* увеличим интенсивность цвета для эффекта вспышки */
+  }
+  
+  /* селектор для кнопок первостепенных операций */
+  .my-btn.primary { 
+    background: rgb(218, 236, 213); /* цвет кнопки оранжевый */
+  }
+  
+  /* селектор для кнопок второстепенных операций */
+  .my-btn.secondary { 
+    background: rgb(166, 216, 153); /* цвет кнопки сервый */
+  }
+  
+  /* селектор для кнопки расчета выражения (=) */
+  .my-btn.execute { 
+    width: 185px;          /* сделаем кнопку шире других */
+  }
+  
+  /* селектор для поля вывода результата */
+  .result { 
+    width: 225px;
+    height:50px;
+    color: #ffffff;   
+    /* margin: 0 auto; */
+    margin-top: 40px;
+    margin-bottom: 15px;         /* отступ снизу */
+    padding-right: 10px;         /* выступ справа */
+    /* padding-top: 10px; */
+    background: rgb(0, 0, 0); /* цвет можно задавать и таким образом */
+    /* text-align: center;           примагнитим текст к правой стороне */
+    font-size: 1.5rem;
+    border-radius: 5%;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  i 
+  {
+    color: rgb(17, 95, 69);
+  }
+  u 
+  {
+    color: #c62f14;
+  }
+  select 
+  {
+    width: 200px;
+    height: 40px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+  }
+
+  .page-top
+  {
+    background-color: #000000;
+    text-align: center;
+    height: 55px;
+    margin: 0 auto;
+  
+  }
+
+  body 
+  {
+    background-color: #000000;
+    text-align: center;
+  }
+
+  .middle-part
+  {
+    
+    background-color: rgb(65, 0, 244);
+  }
+
+  .me
+  {
+    color: #5880be;
+  }

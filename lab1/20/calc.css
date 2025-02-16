@@ -1,6 +1,7 @@
 
 /* опишем базовый стиль кнопки калькулятора */
 .my-btn { 
+    font-style: bold;
     margin-right: 5px;           /* задаем отступ от кнопки справа */
     margin-top: 5px;             /* задаем отступ от кнопки сверху*/
     width: 90px;                 /* задаем ширину кнопки */
@@ -10,7 +11,7 @@
     background: hsl(0, 0%, 100%);         /* задаем серый цвет кнопки */
     color: #000000;                /* задаем белый цвет текста внутри кнопки */
     font-size: 2.2rem;           /* увеличим размер шрифта */
-    font-family: sans-serif, Arial; /* сменим шрифт */
+    font-family:Verdana, Geneva, Tahoma, sans-serif; /* сменим шрифт */
     cursor: pointer;             /* при наведении на кнопку курсор будет изменен
                                     со стрелки на 'указательный палец' */
     user-select: none;           /* отключаем возможность выделить текст внутри кнопки */
@@ -25,6 +26,9 @@
   {
   
     color: white;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-style: bold;
+    font-weight: 1000;
     /* columns: 1; */
     height: 10px;
     list-style: none;

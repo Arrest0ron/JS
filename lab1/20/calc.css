@@ -3,8 +3,8 @@
 .my-btn { 
     margin-right: 5px;           /* задаем отступ от кнопки справа */
     margin-top: 5px;             /* задаем отступ от кнопки сверху*/
-    width: 75px;                 /* задаем ширину кнопки */
-    height: 75px;                /* задаем высоту кнопки */
+    width: 90px;                 /* задаем ширину кнопки */
+    height: 90px;                /* задаем высоту кнопки */
     border-radius: 45%;          /*округляем кнопку */
     border: none;                /* отключаем обводку */
     background: hsl(0, 0%, 100%);         /* задаем серый цвет кнопки */
@@ -23,18 +23,15 @@
 
   li 
   {
+  
     color: white;
-    columns: 1;
+    /* columns: 1; */
+    height: 10px;
     list-style: none;
     display: inline-block;
     margin-right: 40px;
-    margin-left: 120px;
-    /* align-items: center; */
-    /* text-align: right; */
-    /* margin-top: 5px; */
-    /* margin: auto; */
     margin-left: 50px;
-    /* margin-bottom: 20%; */
+    /* margin-top: 20%; */
   }
 
   
@@ -60,7 +57,7 @@
   
   /* селектор для кнопки расчета выражения (=) */
   .my-btn.execute { 
-    width: 155px;          /* сделаем кнопку шире других */
+    width: 185px;          /* сделаем кнопку шире других */
   }
   
   /* селектор для поля вывода результата */
@@ -98,23 +95,22 @@
 
   .page-top
   {
-    /* display:inline-block; */
     background-color: #000000;
     text-align: center;
-    height: 80px;
-    margin-bottom: 30px;
+    height: 55px;
+    margin: 0 auto;
+  
   }
 
   body 
   {
     background-color: #000000;
     text-align: center;
-    /* background-image: url('bg.jpg'); /* Путь к изображению */
-    /* background-size: cover; Масштабирует изображение, чтобы оно покрывало весь экран */
   }
 
   .middle-part
   {
+    
     background-color: rgb(65, 0, 244);
   }
 

@@ -1,10 +1,28 @@
 // файл script.js
+function factorial(number)
+{
+    if (number <= 1)
+    {
+        return 1;
+    }
+    let result = 1;
+    for (let a = number; a != 1; a--)
+    {
+        result*=a;
+        if (result == Infinity)
+        {
+            return Infinity
+        }
+    }
+    return result
+}
 
 window.onload = function(){ 
 
     let a = ''
     let b = ''
     let theme = 0
+    let theme_res = 0 
     let expressionResult = ''
     let selectedOperation = null
     let selectColor = "rgb(9, 42, 115)"
@@ -112,11 +130,30 @@ window.onload = function(){
             document.getElementById("main_part").style.backgroundColor = "rgb(65, 0, 244)";
             theme = 0;
         }
-        
     }
+    document.getElementById("btn_res_theme").onclick = function()
+    {
+        if (theme_res === 0)
+        {
+            document.getElementById("result").style.backgroundColor = "rgb(47, 41, 63)";
+            theme_res = 1;
+        }
+        else
+        {
+            document.getElementById("result").style.backgroundColor = "rgb(65, 0, 244)";
+            theme_res = 0;
+        }
+    }
+
     document.getElementById("btn_op_factorial").onclick = function() { 
         if (a === '') return
-        for ()
+        if (b === ''){ a = factorial(+a); outputElement.innerHTML = a; }
+        else { b = factorial(+b); outputElement.innerHTML = b; }
+    }
+    document.getElementById("btn_op_proton").onclick = function() { 
+        if (a === '') return
+        if (b === ''){ a = (1.67262*10**(-27))*1/(Math.sqrt(1- (a/100)**2)); outputElement.innerHTML = a; }
+        else { b = (1.67262*10**(-27))*1/(Math.sqrt(1- (b/100)**2)); outputElement.innerHTML = b; }
     }
     // кнопка очищения
     document.getElementById("btn_op_clear").onclick = function() { 

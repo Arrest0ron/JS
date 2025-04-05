@@ -155,6 +155,7 @@ export class ProductPage {
         const html = this.getHTML(this.data)
         this.parent.insertAdjacentHTML('beforeend', html)
         document.getElementById('back_button').addEventListener("click",this.clickBack);
+        document.getElementById('logo').addEventListener("click",this.clickBack);
     
         // const data = this.getData()
         // const product = new ProductComponent(this.pageRoot)

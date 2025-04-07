@@ -18,7 +18,7 @@ export class TrackCardComponent {
                 cursor: pointer;
                 position: relative;
             ">
-                <!-- Number on the Left -->
+
                 <div style="
                     font-size: 18px;
                     font-weight: bold;
@@ -32,7 +32,7 @@ export class TrackCardComponent {
                     flex-shrink: 0;
                 ">${trackNumber}</div>
     
-                <!-- Album Art -->
+
                 <div style="
                     position: relative;
                     width: 56px;
@@ -84,7 +84,7 @@ export class TrackCardComponent {
                     </div>
                 </div>
                 
-                <!-- Duration -->
+
                 <div style="
                     color: #b3b3b3;
                     font-size: 14px;
@@ -93,7 +93,7 @@ export class TrackCardComponent {
                     text-align: right;
                 ">${data.duration}</div>
                 
-                <!-- Play Button -->
+
                 <button id="play_${data.id}" style="
                     width: 24px;
                     height: 24px;
@@ -111,11 +111,10 @@ export class TrackCardComponent {
                     <span style="color: white; font-size: 12px; margin-left: 1px;">▶</span>
                 </button>
                 
-    
-                <!-- Action Buttons -->
+
                 <div style="display: flex; gap: 8px; margin-left: 10px;">
     
-                    <!-- Edit Button -->
+
                     <button id="edit_${data.id}" style="
                         width: 28px;
                         height: 28px;
@@ -131,7 +130,7 @@ export class TrackCardComponent {
                         <span style="color: #b3b3b3; font-size: 12px;">✏️</span>
                     </button>
                     
-                    <!-- View Button -->
+
                     <button id="view_${data.id}" data-id="${data.id}" style="
                         width: 28px;
                         height: 28px;
@@ -147,7 +146,7 @@ export class TrackCardComponent {
                         <span style="color: #b3b3b3; font-size: 12px;">👁️</span>
                     </button>
     
-                    <!-- Delete Button -->
+
                     <button id="delete_${data.id}" data-id="${data.id}" style="
                         width: 28px;
                         height: 28px;
@@ -170,14 +169,14 @@ export class TrackCardComponent {
         `;
     }
 
-addListeners(data, listener, deletor) {
-    document
-        .getElementById(`view_${data.id}`)
-        .addEventListener("click", listener)
-    document
-        .getElementById(`delete_${data.id}`)
-        .addEventListener("click", deletor)
-}
+    addListeners(data, listener, deletor) {
+        document
+            .getElementById(`view_${data.id}`)
+            .addEventListener("click", listener)
+        document
+            .getElementById(`delete_${data.id}`)
+            .addEventListener("click", deletor)
+    }
 
     render(data, onClick, onDelete) {
         const html = this.getHTML(data);

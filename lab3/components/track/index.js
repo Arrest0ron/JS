@@ -133,6 +133,4 @@ export class ProductComponent {
             </div>
         `;
     }
-
-
 }

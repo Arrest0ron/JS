@@ -12,7 +12,8 @@ export class AddButtonComponent {
     getHTML() {
         return (
             `
-                <button id="add-button" class="btn btn-primary" style ="background-color:#1DB954; border-color:#3FF984;" type="button">Новая песенка!</button>
+                <button id="add-button" class="btn btn-primary" style ="background-color:#1DB954; border-color:#3FF984;"
+                 type="button">Новая песенка!</button>
             `
         )
     }

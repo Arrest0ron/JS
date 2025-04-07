@@ -1,4 +1,4 @@
-import {ProductComponent} from "../../components/product/index.js";
+import {ProductComponent} from "../../components/track/index.js";
 import {MainPage} from "../main/index.js";
 
 export class ProductPage {
@@ -36,7 +36,7 @@ export class ProductPage {
                 border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             ">
-                <!-- Хедер с кнопкой назад -->
+        
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                     <h1 style="color: #1DB954; margin: 0;">${data.title}</h1>
                     <button id="back_button" style="
@@ -62,7 +62,7 @@ export class ProductPage {
                             border: 2px solid #1DB954;
                         ">
                         
-                        <!-- Доп. информация -->
+                        
                         <div style="margin-top: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                 <span style="color: #b3b3b3;">Длительность:</span>

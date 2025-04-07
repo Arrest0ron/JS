@@ -2,7 +2,7 @@ import {TrackCardComponent} from "../../components/track-card/index.js";
 import {AddButtonComponent} from "../../components/add-button/index.js";
 import {ProductPage} from "../product/index.js";
 
-let data = [
+let track_data = [
     {
         id: "cover_1",
         src: "https://i.scdn.co/image/ab67616d0000b273c8b444df094279e70d0ed856",
@@ -146,33 +146,32 @@ export class MainPage {
     }
         
     getData() {
-        return data;
+        return track_data;
     }
     
-    clickCard(e) {
+    clickTrackCard(e) {
         const cardId = e.currentTarget.dataset.id;
         const data = this.getData().find(item => item.id === cardId); // Находим трек по ID
         const productPage = new ProductPage(this.parent,data); // Передаём данные целиком
         productPage.render();
     }
 
-    deleteCard(e){
-        
+    deleteTrackCard(e){
         const cardId = e.currentTarget.dataset.id;
-        data = data.filter(item => item.id !== cardId);
+        track_data = track_data.filter(item => item.id !== cardId);
         this.reassignIds();
         this.render()
     }
 
-    addCard(e){
-        let newSong = {...data.at(0)};
-        newSong.id = "cover_" + (data.length+1).toString();
-        data.push(newSong)
+    addTrackCard(e){
+        let newSong = {...track_data.at(0)};
+        newSong.id = "cover_" + (track_data.length+1).toString();
+        track_data.push(newSong)
         this.render()
     }
 
     reassignIds() {
-        data.forEach((item, index) => {
+        track_data.forEach((item, index) => {
             item.id = "cover_" + (index + 1).toString();
         });
     }
@@ -182,13 +181,13 @@ export class MainPage {
         const html = this.getHTML();
         this.parent.insertAdjacentHTML('beforeend', html);
         
-        const data = this.getData();
-        data.forEach((item) => {
+        const track_data = this.getData();
+        track_data.forEach((item) => {
             // alert(item.id)
             const trackCard = new TrackCardComponent(this.pageRoot);
-            trackCard.render(item, this.clickCard.bind(this), this.deleteCard.bind(this));
+            trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
         });
-        const addButton = new AddButtonComponent(this.pageRoot);
-        addButton.render(this.addCard.bind(this));
+        const addTrackButton = new AddButtonComponent(this.pageRoot);
+        addTrackButton.render(this.addTrackCard.bind(this));
     }
 }

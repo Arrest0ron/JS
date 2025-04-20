@@ -1,6 +1,7 @@
 import {TrackCardComponent} from "../../components/track-card/index.js";
 import {AddButtonComponent} from "../../components/add-button/index.js";
-import {ProductPage} from "../product/index.js";
+import {SortButtonComponent} from "../../components/sort-button/index.js";
+import {TrackPage} from "../product/index.js";
 
 let track_data = [
     {
@@ -25,8 +26,7 @@ let track_data = [
         duration: "3:31",
         explicit: false,
         popularity: 98,
-        releaseYear: 2017,
-        text: "Biba i boba"
+        releaseYear: 2017
     },
     {
         id: "cover_3",
@@ -123,12 +123,49 @@ let track_data = [
         explicit: false,
         popularity: 94,
         releaseYear: 2023
+    },
+    {
+        id: "cover_11",
+        src: "https://upload.wikimedia.org/wikipedia/en/e/e5/Dixie_Chicks_Home.jpg",
+        title: "Dieselvan",  // Анаграмма для "Landslide"
+        artist: "The Chicks",
+        originalArtist: "Fleetwood Mac",
+        album: "Home",
+        duration: "3:50",
+        explicit: false,
+        popularity: 82,
+        releaseYear: 2002
+    },
+    {
+        id: "cover_12",
+        src: "https://upload.wikimedia.org/wikipedia/ru/6/6b/American_IV_The_Man_Comes_Around.jpg",
+        title: "Truh",  
+        artist: "Johnny Cash",
+        originalArtist: "Nine Inch Nails",
+        album: "American IV: The Man Comes Around",
+        duration: "3:38",
+        explicit: false,
+        popularity: 92,
+        releaseYear: 2002
+    },
+    {
+        id: "cover_13",
+        src: "https://i1.sndcdn.com/artworks-J3Xj53hUvecIUKQZ-zkd3kw-t500x500.jpg",
+        title: "Gingeb", 
+        artist: "Måneskin",
+        originalArtist: "The Four Seasons",
+        album: "Chosen",
+        duration: "3:31",
+        explicit: false,
+        popularity: 98,
+        releaseYear: 2017
     }
 ];
 
 export class MainPage {
     constructor(parent) {
         this.parent = parent;
+        this.sort_status = 0;
     }
     
     get pageRoot() {
@@ -142,6 +179,10 @@ export class MainPage {
                 margin: 0 auto;
                 padding: 20px;
             "></div>
+            <div class="anagram-checkbox-container">
+            </div>
+            <div class="gallery"></div>
+            <div class="anagram-info mt-4"></div> <!-- Плашка для группировки анаграмм -->
         `;
     }
         
@@ -152,7 +193,7 @@ export class MainPage {
     clickTrackCard(e) {
         const cardId = e.currentTarget.dataset.id;
         const data = this.getData().find(item => item.id === cardId); // Находим трек по ID
-        const productPage = new ProductPage(this.parent,data); // Передаём данные целиком
+        const productPage = new TrackPage(this.parent,data); // Передаём данные целиком
         productPage.render();
     }
 
@@ -163,17 +204,36 @@ export class MainPage {
         this.render()
     }
 
-    addTrackCard(e){
+    addTrackCard(){
         let newSong = {...track_data.at(0)};
         newSong.id = "cover_" + (track_data.length+1).toString();
         track_data.push(newSong)
         this.render()
+        this.reassignIds();
+    }
+
+    sortTracksByName() {
+        if (this.sort_status != 2)
+        {
+            track_data = track_data.sort((a, b) => a.title.localeCompare(b.title));
+            this.sort_status = 2
+
+        }
+        else
+        {
+            track_data = track_data.sort((a, b) => -a.title.localeCompare(b.title));
+            this.sort_status = 1
+        }
+        this.reassignIds();
+        this.render()
+
     }
 
     reassignIds() {
         track_data.forEach((item, index) => {
             item.id = "cover_" + (index + 1).toString();
         });
+        
     }
         
     render() {
@@ -189,5 +249,64 @@ export class MainPage {
         });
         const addTrackButton = new AddButtonComponent(this.pageRoot);
         addTrackButton.render(this.addTrackCard.bind(this));
+
+        const sortTracksButton = new SortButtonComponent(this.pageRoot);
+        sortTracksButton.render(this.sortTracksByName.bind(this));
+
+        const anagramGroupContainer = this.parent.querySelector('.anagram-info');
+        if (anagramGroupContainer) {
+            this.showAnagramGroups(anagramGroupContainer);
+        } else {
+            console.error('Элемент .anagram-info не найден');
+        }
+    }
+
+
+
+    showAnagramGroups(container) {
+        const titles = track_data.map(track => track.title); // Прямой доступ к track_data
+        const anagramGroups = this.findAnagrams(titles);
+        container.innerHTML = '';
+        if (anagramGroups.length > 0) {
+            container.innerHTML = `<p>Группы анаграмм среди треков: <br>${anagramGroups.join(';<br> ')}</p>`;
+        } else {
+            container.innerHTML = `<p>Группы анаграмм среди треков не найдены.</p>`;
+        }
+    }
+
+    findAnagrams(words) {
+        const anagrams = {};
+        for (let word of words) {
+            // Удаляем пробелы, апострофы и приводим к нижнему регистру
+            const cleanedWord = word.toLowerCase().replace(/[\s']/g, '');
+            const sortedWord = cleanedWord.split('').sort().join('');
+            if (!anagrams[sortedWord]) {
+                anagrams[sortedWord] = [];
+            }
+            // Сохраняем оригинальное название для отображения
+            anagrams[sortedWord].push(word);
+        }
+        return Object.values(anagrams)
+            .filter(group => group.length >= 2) // Только группы с 2+ анаграммами
+            .map(group => group.sort().join(', ')) // Сортируем названия в группе
+            .sort(); // Сортируем сами группы
+    }
+
+    isAnagram(title) {
+        // Очищаем и сортируем буквы входного названия
+        const cleanedTitle = title.toLowerCase().replace(/[\s']/g, '');
+        const sortedInput = cleanedTitle.split('').sort().join('');
+        
+        // Проверяем все треки на анаграммы
+        for (const track of track_data) {
+            const cleanedTrackTitle = track.title.toLowerCase().replace(/[\s']/g, '');
+            const sortedTrackTitle = cleanedTrackTitle.split('').sort().join('');
+            
+            // Если найдена анаграмма (но не то же самое слово)
+            if (sortedTrackTitle === sortedInput && cleanedTrackTitle !== cleanedTitle) {
+                return true;
+            }
+        }
+        return false;
     }
 }

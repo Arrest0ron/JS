@@ -1,15 +1,12 @@
-import {ProductComponent} from "../../components/track/index.js";
 import {MainPage} from "../main/index.js";
 
-export class ProductPage {
+export class TrackPage {
     constructor(parent, data) {
         this.parent = parent
         this.id = data.id
         this.data = data
         
     }
-
-   
 
     get pageRoot() {
         return document.getElementById('product-page')
@@ -20,11 +17,6 @@ export class ProductPage {
         mainPage.render()
     }
 
-    // addListener(id, listener) {
-    //     document
-    //         .getElementById(id)
-    //         .addEventListener("click", listener)
-    // }
 
     getHTML(data) {
         return `
@@ -53,7 +45,7 @@ export class ProductPage {
                 </div>
     
                 <div class="row g-0">
-                    <!-- Обложка -->
+                    
                     <div class="col-md-5" style="padding-right: 20px;">
                         <img src="${data.src}" class="img-fluid" alt="Обложка" style="
                             width: 100%;
@@ -88,7 +80,7 @@ export class ProductPage {
                         </div>
                     </div>
                     
-                    <!-- Основная информация -->
+                    
                     <div class="col-md-7">
                         <div style="padding-left: 20px;">
                             <h2 style="color: #1DB954; margin-top: 0;">${data.artist || 'Исполнитель'}</h2>
@@ -99,7 +91,7 @@ export class ProductPage {
                                 <p style="color: #b3b3b3;">${data.text || 'Здесь должно быть описание трека, но мы его пока не придумали...'}</p>
                             </div>
                             
-                            <!-- Действия -->
+                           
                             <div style="display: flex; gap: 15px; margin-top: 30px;">
                                 <button style="
                                     background: #1DB954;
@@ -126,22 +118,6 @@ export class ProductPage {
                                     ✏️ Редактировать
                                 </button>
                                 
-                                <button style="
-                                    background: rgba(255,255,255,0.1);
-                                    color: white;
-                                    border: none;
-                                    padding: 10px 25px;
-                                    border-radius: 25px;
-                                    cursor: pointer;
-                                    transition: all 0.3s;
-                                ">
-                                    ❤️ В избранное
-                                </button>
-                            </div>
-                            
-                            <!-- Шуточный элемент -->
-                            <div style="margin-top: 30px; color: #555; font-size: 12px; text-align: right;">
-                                * Количество бананов в треке: ${Math.floor(Math.random() * 5) + 1} из 5 🍌
                             </div>
                         </div>
                     </div>
@@ -156,9 +132,5 @@ export class ProductPage {
         this.parent.insertAdjacentHTML('beforeend', html)
         document.getElementById('back_button').addEventListener("click",this.clickBack);
         document.getElementById('logo').addEventListener("click",this.clickBack);
-    
-        // const data = this.getData()
-        // const product = new ProductComponent(this.pageRoot)
-        // product.render(data)
     }
 }

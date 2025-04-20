@@ -77,11 +77,11 @@
     color: var(--spotify-green);
 }
 
-/* Исправленное подчеркивание */
+
 .nav-menu li a::after {
     content: '';
     position: absolute;
-    bottom: -5px;  /* Смещаем ниже текста */
+    bottom: -5px;  
     left: 0;
     width: 0;
     height: 2px;
@@ -159,7 +159,7 @@
             transform: perspective(1000px) rotateY(0deg);
         }
         
-        /* Подвал (оставляем как было) */
+
         .page-footer {
             background: linear-gradient(to right, var(--darker-bg) 0%, #0f0f0f 100%);
             color: white;
@@ -247,7 +247,16 @@
 
     <main class="main-content">
         <div class="calculator-container">
-            <div id="root"></div>
+            <div id="root">
+                             <div class="anagram-checkbox-container">
+                <label>
+                    <input type="checkbox" id="anagram-checkbox"> Анаграммы
+                </label>
+            </div>
+            <div class="gallery"></div>
+            <div class="anagram-info mt-4"></div> <!-- Плашка для группировки анаграмм -->
+            </div>
+
             <div class="banana-counter">*бананы в комплект не входят</div>
         </div>
         <img src="https://www-growth.scdn.co/static/yna/tablet_bananas_yna.png" 

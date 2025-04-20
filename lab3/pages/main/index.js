@@ -1,7 +1,7 @@
-import {TrackCardComponent} from "../../components/track-card/index.js";
-import {AddButtonComponent} from "../../components/add-button/index.js";
-import {SortButtonComponent} from "../../components/sort-button/index.js";
-import {TrackPage} from "../product/index.js";
+import { TrackCardComponent } from "../../components/track-card/index.js";
+import { AddButtonComponent } from "../../components/add-button/index.js";
+import { SortButtonComponent } from "../../components/sort-button/index.js";
+import { TrackPage } from "../product/index.js";
 
 let track_data = [
     {
@@ -178,8 +178,12 @@ export class MainPage {
                 max-width: 800px;
                 margin: 0 auto;
                 padding: 20px;
-            "></div>
-            <div class="anagram-checkbox-container">
+            ">
+                <!-- Контейнер для чекбокса "Показать анаграммы" -->
+                <div class="anagram-toggle-container">
+                    <input type="checkbox" id="toggle-anagrams" checked>
+                    <label for="toggle-anagrams">Показать список анаграмм</label>
+                </div>
             </div>
             <div class="gallery"></div>
             <div class="anagram-info mt-4"></div> <!-- Плашка для группировки анаграмм -->
@@ -193,82 +197,105 @@ export class MainPage {
     clickTrackCard(e) {
         const cardId = e.currentTarget.dataset.id;
         const data = this.getData().find(item => item.id === cardId); // Находим трек по ID
-        const productPage = new TrackPage(this.parent,data); // Передаём данные целиком
+        const productPage = new TrackPage(this.parent, data); // Передаём данные целиком
         productPage.render();
     }
 
-    deleteTrackCard(e){
+    deleteTrackCard(e) {
         const cardId = e.currentTarget.dataset.id;
         track_data = track_data.filter(item => item.id !== cardId);
         this.reassignIds();
-        this.render()
+        this.render();
     }
 
-    addTrackCard(){
+    addTrackCard() {
         let newSong = {...track_data.at(0)};
-        newSong.id = "cover_" + (track_data.length+1).toString();
-        track_data.push(newSong)
-        this.render()
+        newSong.id = "cover_" + (track_data.length + 1).toString();
+        track_data.push(newSong);
+        this.render();
         this.reassignIds();
     }
 
     sortTracksByName() {
-        if (this.sort_status != 2)
-        {
+        if (this.sort_status != 2) {
             track_data = track_data.sort((a, b) => a.title.localeCompare(b.title));
-            this.sort_status = 2
-
-        }
-        else
-        {
+            this.sort_status = 2;
+        } else {
             track_data = track_data.sort((a, b) => -a.title.localeCompare(b.title));
-            this.sort_status = 1
+            this.sort_status = 1;
         }
         this.reassignIds();
-        this.render()
-
+        this.render();
     }
 
     reassignIds() {
         track_data.forEach((item, index) => {
             item.id = "cover_" + (index + 1).toString();
         });
-        
     }
         
     render() {
         this.parent.innerHTML = '';
         const html = this.getHTML();
         this.parent.insertAdjacentHTML('beforeend', html);
-        
+
+        // Привязываем обработчик события для чекбокса "Показать анаграммы"
+        const toggleAnagramsCheckbox = document.getElementById('toggle-anagrams');
+        toggleAnagramsCheckbox.addEventListener('change', () => this.toggleAnagramsVisibility());
+
+        // Отображаем все треки по умолчанию
         const track_data = this.getData();
-        track_data.forEach((item) => {
-            // alert(item.id)
-            const trackCard = new TrackCardComponent(this.pageRoot);
-            trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
-        });
+        const gallery = this.parent.querySelector('.gallery');
+
+        // Кнопка добавления трека
         const addTrackButton = new AddButtonComponent(this.pageRoot);
         addTrackButton.render(this.addTrackCard.bind(this));
 
+        // Кнопка сортировки треков
         const sortTracksButton = new SortButtonComponent(this.pageRoot);
         sortTracksButton.render(this.sortTracksByName.bind(this));
 
+        // Показываем группы анаграмм
         const anagramGroupContainer = this.parent.querySelector('.anagram-info');
         if (anagramGroupContainer) {
             this.showAnagramGroups(anagramGroupContainer);
         } else {
             console.error('Элемент .anagram-info не найден');
         }
+
+        // Убедимся, что при загрузке страницы отображаются все треки
+        this.restoreAllTracks();
     }
-
-
 
     showAnagramGroups(container) {
         const titles = track_data.map(track => track.title); // Прямой доступ к track_data
         const anagramGroups = this.findAnagrams(titles);
-        container.innerHTML = '';
+
+        container.innerHTML = ''; // Очистка контейнера
+
         if (anagramGroups.length > 0) {
-            container.innerHTML = `<p>Группы анаграмм среди треков: <br>${anagramGroups.join(';<br> ')}</p>`;
+            // Создаем заголовок
+            container.innerHTML += `<p>Группы анаграмм среди треков:</p>`;
+
+            // Создаем чекбоксы для каждой группы анаграмм
+            anagramGroups.forEach((group, index) => {
+                const groupName = group.join(', ');
+                const sortedKey = group[0].toLowerCase().replace(/[\s']/g, '').split('').sort().join('');
+
+                // Создаем чекбокс
+                const checkboxId = `anagram-group-${index}`;
+                const checkboxHTML = `
+                    <div style="margin-bottom: 8px;">
+                        <input type="checkbox" id="${checkboxId}" data-anagram-key="${sortedKey}">
+                        <label for="${checkboxId}">${groupName}</label>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', checkboxHTML);
+
+                // Привязываем обработчик события
+                const checkbox = document.getElementById(checkboxId);
+                checkbox.addEventListener('change', () => this.filterTracksByAnagrams());
+            });
         } else {
             container.innerHTML = `<p>Группы анаграмм среди треков не найдены.</p>`;
         }
@@ -288,25 +315,66 @@ export class MainPage {
         }
         return Object.values(anagrams)
             .filter(group => group.length >= 2) // Только группы с 2+ анаграммами
-            .map(group => group.sort().join(', ')) // Сортируем названия в группе
+            .map(group => group.sort()) // Сортируем названия в группе
             .sort(); // Сортируем сами группы
     }
 
-    isAnagram(title) {
-        // Очищаем и сортируем буквы входного названия
-        const cleanedTitle = title.toLowerCase().replace(/[\s']/g, '');
-        const sortedInput = cleanedTitle.split('').sort().join('');
-        
-        // Проверяем все треки на анаграммы
-        for (const track of track_data) {
-            const cleanedTrackTitle = track.title.toLowerCase().replace(/[\s']/g, '');
-            const sortedTrackTitle = cleanedTrackTitle.split('').sort().join('');
-            
-            // Если найдена анаграмма (но не то же самое слово)
-            if (sortedTrackTitle === sortedInput && cleanedTrackTitle !== cleanedTitle) {
-                return true;
-            }
+    filterTracksByAnagrams() {
+        const checkedCheckboxes = Array.from(
+            document.querySelectorAll('.anagram-info input[type="checkbox"]:checked')
+        );
+
+        // Получаем ключи выбранных групп анаграмм
+        const selectedKeys = checkedCheckboxes.map(checkbox => checkbox.dataset.anagramKey);
+
+        // Фильтруем треки
+        const filteredTracks = track_data.filter(track => {
+            const cleanedTitle = track.title.toLowerCase().replace(/[\s']/g, '');
+            const sortedTitle = cleanedTitle.split('').sort().join('');
+            return selectedKeys.includes(sortedTitle);
+        });
+
+        // Очищаем текущий список треков
+        const gallery = this.parent.querySelector('.gallery');
+        gallery.innerHTML = '';
+
+        // Отображаем отфильтрованные треки
+        if (filteredTracks.length > 0) {
+            filteredTracks.forEach(item => {
+                const trackCard = new TrackCardComponent(gallery);
+                trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
+            });
+        } else {
+            gallery.innerHTML = '<p>Нет треков для отображения.</p>';
         }
-        return false;
+    }
+
+    toggleAnagramsVisibility() {
+        const toggleAnagramsCheckbox = document.getElementById('toggle-anagrams');
+        const anagramInfoContainer = this.parent.querySelector('.anagram-info');
+
+        if (!toggleAnagramsCheckbox.checked) {
+            // Если чекбокс выключен, скрываем список анаграмм
+            anagramInfoContainer.style.display = 'none';
+            // Восстанавливаем изначальный список треков
+            this.restoreAllTracks();
+        } else {
+            // Если чекбокс включен, показываем список анаграмм
+            anagramInfoContainer.style.display = 'block';
+            // Если есть выбранные анаграммы, фильтруем треки
+            this.filterTracksByAnagrams();
+        }
+    }
+
+    restoreAllTracks() {
+        const gallery = this.parent.querySelector('.gallery');
+        gallery.innerHTML = ''; // Очищаем галерею
+
+        // Отображаем все треки
+        const track_data = this.getData();
+        track_data.forEach((item) => {
+            const trackCard = new TrackCardComponent(gallery);
+            trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
+        });
     }
 }

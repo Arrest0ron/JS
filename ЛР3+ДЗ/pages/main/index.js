@@ -179,7 +179,6 @@ export class MainPage {
                 margin: 0 auto;
                 padding: 20px;
             ">
-                <!-- Контейнер для поиска -->
                 <div class="search-container">
                     <input type="text" id="search-input" placeholder="Поиск по названию трека..." style="
                         width: 100%;
@@ -197,12 +196,11 @@ export class MainPage {
 
             </div>
             <div class="gallery"></div>
-                            <!-- Контейнер для чекбокса "Показать анаграммы" -->
                 <div class="anagram-toggle-container">
                     <input type="checkbox" id="toggle-anagrams" checked>
                     <label for="toggle-anagrams">Показать список анаграмм</label>
                 </div>
-            <div class="anagram-info mt-4"></div> <!-- Плашка для группировки анаграмм -->
+            <div class="anagram-info mt-4"></div> 
         `;
     }
         

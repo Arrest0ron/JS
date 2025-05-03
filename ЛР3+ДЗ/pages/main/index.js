@@ -2,6 +2,8 @@ import { TrackCardComponent } from "../../components/track-card/index.js";
 import { AddButtonComponent } from "../../components/add-button/index.js";
 import { SortButtonComponent } from "../../components/sort-button/index.js";
 import { TrackPage } from "../product/index.js";
+import { TrackUtils } from "../../components/utils/index.js"; // Импорт обновлённого класса
+
 
 let track_data = [
     {
@@ -162,56 +164,135 @@ let track_data = [
     }
 ];
 
+
 export class MainPage {
     constructor(parent) {
         this.parent = parent;
         this.sort_status = 0;
     }
-    
+
     get pageRoot() {
         return document.getElementById('main-page');
     }
-        
-    getHTML() {
-        return `
-            <div id="main-page" style="
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-            ">
-                <div class="search-container">
+getHTML() {
+    return `
+        <div id="main-page" style="
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        ">
+            <div class="search-container" style="margin-bottom: 30px;">
+                <div style="
+                    position: relative;
+                    width: 100%;
+                ">
+                    <svg style="
+                        position: absolute;
+                        left: 15px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        fill: #b3b3b3;
+                        width: 20px;
+                        height: 20px;
+                    " viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
                     <input type="text" id="search-input" placeholder="Поиск по названию трека..." style="
                         width: 100%;
-                        padding: 10px 12px 10px 40px; 
+                        padding: 12px 40px 12px 45px; 
                         border: none;
-                        border-radius: 25px;
+                        border-radius: 30px;
                         background-color: #282828; 
                         color: #ffffff; 
                         font-size: 16px;
                         outline: none; 
-                        margin-bottom: 30px;
-                    ">
+                        transition: background-color 0.3s;
+                    " onfocus="this.style.backgroundColor = '#333';" onblur="this.style.backgroundColor = '#282828'">
                 </div>
-
-
             </div>
-            <div class="gallery"></div>
-                <div class="anagram-toggle-container">
-                    <input type="checkbox" id="toggle-anagrams" checked>
-                    <label for="toggle-anagrams">Показать список анаграмм</label>
+
+            <!-- Контейнер для треков -->
+            <div class="gallery" style="display: flex; flex-wrap: wrap;"></div>
+
+            <!-- Блок статистики -->
+            <div class="stats-container" style="
+                margin-top: 25px;
+                padding: 15px 20px;
+                background-color: #1e1e1e;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            ">
+                <p style="margin: 0 0 8px 0; font-weight: 600; color: #1db954;">Сумма квадратов популярности:</p>
+                <h4 style="margin: 0 0 12px 0; font-size: 20px; color: #ffffff;" id="sum-squares">—</h4>
+
+                <p style="margin: 0 0 8px 0; font-weight: 600; color: #1db954;">Сумма и произведение популярности:</p>
+                <h4 style="margin: 0; font-size: 20px; color: #ffffff;" id="sum-mult">—</h4>
+            </div>
+
+            <!-- Контейнер анаграмм -->
+            <div class="anagram-toggle-container" style="
+                margin-top: 25px;
+                padding: 15px;
+                background-color: #1e1e1e;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            ">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="toggle-anagrams" checked style="
+                        width: 18px;
+                        height: 18px;
+                        accent-color: #1db954;
+                    ">
+                    <label for="toggle-anagrams" style="
+                        font-size: 15px;
+                        color: #b3b3b3;
+                        cursor: pointer;
+                    ">Показать список анаграмм</label>
                 </div>
-            <div class="anagram-info mt-4"></div> 
-        `;
-    }
-        
+            </div>
+
+            <div class="anagram-info mt-4" style="
+                margin-top: 15px;
+                padding: 15px;
+                background-color: #1e1e1e;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                color: #b3b3b3;
+                font-size: 14px;
+            "></div>
+        </div>
+
+        <div id="matrix-info" class="matrix-info" style="
+    margin-top: 25px;
+    padding: 15px 20px;
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+">
+    <p style="
+        margin: 0 0 8px 0;
+        font-weight: 600;
+        color: #1db954;
+    ">Жадная квадратная матрица популярности:</p>
+    <p style="margin: 0 0 8px 0; color: #b3b3b3;">Размер матрицы: <span id="matrix-size">—</span></p>
+    <p style="margin: 0 0 8px 0; color: #b3b3b3;">Значения матрицы: <span id="matrix-values">—</span></p>
+    <p style="margin: 0 0 8px 0; font-weight: 600; color: #1db954;">Сумма диагоналей:</p>
+    <h4 style="margin: 0; font-size: 20px; color: #ffffff;" id="diagonal-sum">—</h4>
+</div>
+    `;
+}
+
     getData() {
         return track_data;
     }
-    
+
     clickTrackCard(e) {
         const cardId = e.currentTarget.dataset.id;
-        const data = this.getData().find(item => item.id === cardId); // Находим трек по ID
-        const productPage = new TrackPage(this.parent, data); // Передаём данные целиком
+        const data = this.getData().find(item => item.id === cardId);
+        const productPage = new TrackPage(this.parent, data);
         productPage.render();
     }
 
@@ -223,7 +304,7 @@ export class MainPage {
     }
 
     addTrackCard() {
-        let newSong = {...track_data.at(0)};
+        let newSong = {...track_data[0]};
         newSong.id = "cover_" + (track_data.length + 1).toString();
         track_data.push(newSong);
         this.render();
@@ -231,7 +312,7 @@ export class MainPage {
     }
 
     sortTracksByName() {
-        if (this.sort_status != 2) {
+        if (this.sort_status !== 2) {
             track_data = track_data.sort((a, b) => a.title.localeCompare(b.title));
             this.sort_status = 2;
         } else {
@@ -247,7 +328,7 @@ export class MainPage {
             item.id = "cover_" + (index + 1).toString();
         });
     }
-        
+
     render() {
         this.parent.innerHTML = '';
         const html = this.getHTML();
@@ -265,75 +346,43 @@ export class MainPage {
         const anagramTracksGroupContainer = this.parent.querySelector('.anagram-info');
         if (anagramTracksGroupContainer) {
             this.showTrackAnagramGroups(anagramTracksGroupContainer);
-        } 
+        }
+
         const addTrackButton = new AddButtonComponent(this.pageRoot);
         addTrackButton.render(this.addTrackCard.bind(this));
 
+        const popularities = this.getData().map(item => item.popularity);
+
+        const sumSquares = TrackUtils.sumOfSquares(popularities);
+        const { sum, mult } = TrackUtils.getSumAndMultOfArray(popularities);
+        document.getElementById('sum-squares').textContent = sumSquares;
+        document.getElementById('sum-mult').textContent = `Сумма: ${sum}, Произведение: ${mult}`;
+
+        const matrix = TrackUtils.createSquareMatrix(popularities);
+        if (matrix) {
+            const diagSum = TrackUtils.diagonalSum(matrix);
+            document.getElementById('matrix-size').textContent = `${matrix.length}×${matrix.length}`;
+            document.getElementById('matrix-values').textContent = JSON.stringify(matrix).replace(/,/g, ', ');
+            document.getElementById('diagonal-sum').textContent = diagSum;
+        } else {
+            document.getElementById('matrix-info').style.display = 'none';
+        }
 
         this.restoreAllTracks();
     }
 
     showTrackAnagramGroups(container) {
-        const trackTitles = track_data.map(track => track.title); 
-        const anagramTrackGroups = this.findAnagramsInTracks(trackTitles);
-
-        container.innerHTML = ''; 
-
-        if (anagramTrackGroups.length > 0) {
-
-            container.innerHTML += `<p>Группы анаграмм среди треков:</p>`;
-
-           
-            anagramTrackGroups.forEach((group, index) => {
-                const trackGroupName = group.join(', ');
-                const sortedTrackAnagramKey = group[0].toLowerCase().replace(/[\s']/g, '').split('').sort().join('');
-
-
-                const checkboxId = `anagram-group-${index}`;
-                const checkboxHTML = `
-                    <div style="margin-bottom: 8px;">
-                        <input type="checkbox" id="${checkboxId}" data-anagram-key="${sortedTrackAnagramKey}">
-                        <label for="${checkboxId}">${trackGroupName}</label>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', checkboxHTML);
-
-                const checkboxTrackAnagramGroup = document.getElementById(checkboxId);
-                checkboxTrackAnagramGroup.addEventListener('change', () => this.filterTracksByAnagrams());
-            });
-        } else {
-            container.innerHTML = `<p>Группы анаграмм среди треков не найдены.</p>`;
-        }
+        const trackTitles = this.getData().map(track => track.title);
+        const anagramGroups = TrackUtils.findAnagramGroups(trackTitles);
+        TrackUtils.renderAnagramGroups(container, anagramGroups, () => this.filterTracksByAnagrams());
     }
 
-    findAnagramsInTracks(words) {
-        const anagramsTracks = {};
-        for (let word of words) {
-            const cleanedWord = word.toLowerCase().replace(/[\s']/g, '');
-            const sortedWord = cleanedWord.split('').sort().join('');
-            if (!anagramsTracks[sortedWord]) {
-                anagramsTracks[sortedWord] = [];
-            }
-            anagramsTracks[sortedWord].push(word);
-        }
-        return Object.values(anagramsTracks)
-            .filter(group => group.length >= 2)
-            .map(group => group.sort())
-            .sort();
-    }
-
-
-    filterTracksBySearch() {
-        const searchInput = document.getElementById('search-input');
-        const query = searchInput.value.toLowerCase().trim();
-
-        const filteredTracks = query
-            ? track_data.filter(track => track.title.toLowerCase().includes(query))
-            : track_data;
-
+    filterTracksByAnagrams() {
+        const container = this.parent.querySelector('.anagram-info');
+        const selectedKeys = TrackUtils.getSelectedKeys(container);
+        const filteredTracks = TrackUtils.filterByAnagramKeys(track_data, selectedKeys);
         const gallery = this.parent.querySelector('.gallery');
         gallery.innerHTML = '';
-
         if (filteredTracks.length > 0) {
             filteredTracks.forEach(item => {
                 const trackCard = new TrackCardComponent(gallery);
@@ -344,51 +393,41 @@ export class MainPage {
         }
     }
 
-    filterTracksByAnagrams() {
-        const checkedTrackGroupsCheckboxes = Array.from(
-            document.querySelectorAll('.anagram-info input[type="checkbox"]:checked')
-        );       
+    toggleAnagramsVisibility() {
+        const toggleCheckbox = document.getElementById('toggle-anagrams');
+        const container = this.parent.querySelector('.anagram-info');
 
-        const selectedKeys = checkedTrackGroupsCheckboxes.map(checkbox => checkbox.dataset.anagramKey);
-
-        const filteredTracks = track_data.filter(track => {
-            const cleanedTitle = track.title.toLowerCase().replace(/[\s']/g, '');
-            const sortedTitle = cleanedTitle.split('').sort().join('');
-            return selectedKeys.includes(sortedTitle);
-        });
-
-        const trackGallery = this.parent.querySelector('.gallery');
-        trackGallery.innerHTML = '';
-
-        if (filteredTracks.length > 0) {
-            filteredTracks.forEach(item => {
-                const trackCard = new TrackCardComponent(trackGallery);
-                trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
-            });
+        if (!toggleCheckbox.checked) {
+            container.style.display = 'none';
+            this.restoreAllTracks();
         } else {
-            trackGallery.innerHTML = '<p>Нет треков для отображения.</p>';
+            container.style.display = 'block';
+            this.filterTracksByAnagrams();
         }
     }
 
-    toggleAnagramsVisibility() {
-        const toggleTracksAnagramsCheckbox = document.getElementById('toggle-anagrams');
-        const anagramInfoContainer = this.parent.querySelector('.anagram-info');
+    filterTracksBySearch() {
+        const query = document.getElementById('search-input').value.toLowerCase().trim();
+        const filteredTracks = query
+            ? track_data.filter(track => track.title.toLowerCase().includes(query))
+            : track_data;
 
-        if (!toggleTracksAnagramsCheckbox.checked) {
-            anagramInfoContainer.style.display = 'none';
-            this.restoreAllTracks();
+        const gallery = this.parent.querySelector('.gallery');
+        gallery.innerHTML = '';
+        if (filteredTracks.length > 0) {
+            filteredTracks.forEach(item => {
+                const trackCard = new TrackCardComponent(gallery);
+                trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
+            });
         } else {
-            anagramInfoContainer.style.display = 'block';
-            this.filterTracksByAnagrams();
+            gallery.innerHTML = '<p>Нет треков для отображения.</p>';
         }
     }
 
     restoreAllTracks() {
         const gallery = this.parent.querySelector('.gallery');
-        gallery.innerHTML = ''; 
-
-        const track_data = this.getData();
-        track_data.forEach((item) => {
+        gallery.innerHTML = '';
+        this.getData().forEach(item => {
             const trackCard = new TrackCardComponent(gallery);
             trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
         });

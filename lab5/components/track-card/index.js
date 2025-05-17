@@ -4,7 +4,7 @@ export class TrackCardComponent {
     }
 
     getHTML(data) {
-        const trackNumber = data.id.split('_')[1];
+        const trackNumber = data.id;
         return `
             <div class="track-card" id="${data.id}" style="
                 display: flex;

@@ -19,11 +19,11 @@ class TrackUrls {
         return `${this.baseUrl}/tracks`;
     }
 
-    removeTrackById() {
+    removeTrackById(id) {
         return `${this.baseUrl}/tracks/${id}`;
     }
 
-    updateTrackById() {
+    updateTrackById(id) {
         return `${this.baseUrl}/tracks/${id}`;
     }
 }

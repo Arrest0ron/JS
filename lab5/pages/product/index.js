@@ -1,10 +1,13 @@
 import {MainPage} from "../main/index.js";
+import {ajax} from "../../modules/ajax.js";
+import {trackUrls} from "../../modules/trackUrls.js";
+
+
 
 export class TrackPage {
-    constructor(parent, data) {
+    constructor(parent, id) {
         this.parent = parent
-        this.id = data.id
-        this.data = data
+        this.id = id
         
     }
 
@@ -127,10 +130,13 @@ export class TrackPage {
     }
 
     render() {
-        this.parent.innerHTML = ''
-        const html = this.getHTML(this.data)
-        this.parent.insertAdjacentHTML('beforeend', html)
-        document.getElementById('back_button').addEventListener("click",this.clickBack);
-        document.getElementById('logo').addEventListener("click",this.clickBack);
+        ajax.get(trackUrls.getTrackById(this.id), (data) => {
+            this.parent.innerHTML = ''
+            const html = this.getHTML(data)
+            this.parent.insertAdjacentHTML('beforeend', html)
+            document.getElementById('back_button').addEventListener("click",this.clickBack);
+            document.getElementById('logo').addEventListener("click",this.clickBack);
+        })
+
     }
 }

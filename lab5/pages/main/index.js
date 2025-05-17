@@ -60,128 +60,77 @@ getHTML() {
             <!-- Контейнер для треков -->
             <div class="gallery" style="display: flex; flex-wrap: wrap;"></div>
 
-            <!-- Блок статистики -->
-            <div class="stats-container" style="
-                margin-top: 25px;
-                padding: 15px 20px;
-                background-color: #1e1e1e;
-                border-radius: 12px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            ">
-                <p style="margin: 0 0 8px 0; font-weight: 600; color: #1db954;">Сумма квадратов популярности:</p>
-                <h4 style="margin: 0 0 12px 0; font-size: 20px; color: #ffffff;" id="sum-squares">—</h4>
 
-                <p style="margin: 0 0 8px 0; font-weight: 600; color: #1db954;">Сумма и произведение популярности:</p>
-                <h4 style="margin: 0; font-size: 20px; color: #ffffff;" id="sum-mult">—</h4>
             </div>
 
-            <!-- Контейнер анаграмм -->
-            <div class="anagram-toggle-container" style="
-                margin-top: 25px;
-                padding: 15px;
-                background-color: #1e1e1e;
-                border-radius: 12px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            ">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="toggle-anagrams" checked style="
-                        width: 18px;
-                        height: 18px;
-                        accent-color: #1db954;
-                    ">
-                    <label for="toggle-anagrams" style="
-                        font-size: 15px;
-                        color: #b3b3b3;
-                        cursor: pointer;
-                    ">Показать список анаграмм</label>
-                </div>
-            </div>
-
-            <div class="anagram-info mt-4" style="
-                margin-top: 15px;
-                padding: 15px;
-                background-color: #1e1e1e;
-                border-radius: 12px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-                color: #b3b3b3;
-                font-size: 14px;
-            "></div>
         </div>
 
-        <div id="matrix-info" class="matrix-info" style="
-    margin-top: 25px;
-    padding: 15px 20px;
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-">
-    <p style="
-        margin: 0 0 8px 0;
-        font-weight: 600;
-        color: #1db954;
-    ">Жадная квадратная матрица популярности:</p>
-    <p style="margin: 0 0 8px 0; color: #b3b3b3;">Размер матрицы: <span id="matrix-size">—</span></p>
-    <p style="margin: 0 0 8px 0; color: #b3b3b3;">Значения матрицы: <span id="matrix-values">—</span></p>
-    <p style="margin: 0 0 8px 0; font-weight: 600; color: #1db954;">Сумма диагоналей:</p>
-    <h4 style="margin: 0; font-size: 20px; color: #ffffff;" id="diagonal-sum">—</h4>
-</div>
+     
     `;
 }
 
     getData() {
+        console.log("Fetching data...");
         ajax.get(trackUrls.getTracks(), (data) => {
-        this.renderData(data);
-        })
+            // Log size: number of items (if array)
+            if (Array.isArray(data)) {
+                console.log(`Fetched ${data.length} items.`);
+            }
+
+            // Optional: Log JSON size in characters or estimated bytes
+            const dataSizeInBytes = new Blob([JSON.stringify(data)]).size;
+            console.log(`Data size: ~${dataSizeInBytes} bytes`);
+
+            this.renderData(data);
+        });
+        console.log("Fetch initiated. Processing will continue when data arrives.");
     }
 
     renderData(items) {
-        // items.forEach((item) => {
-        //     const productCard = new TrackCardComponent(this.pageRoot)
-        //     productCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this))
-        // })
+        items.forEach((item) => {
+            const productCard = new TrackCardComponent(this.pageRoot)
+            productCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this))
+        })
     }
 
     clickTrackCard(e) {
-        // const cardId = e.currentTarget.dataset.id;
-        // const data = this.getData().find(item => item.id === cardId);
-        // const productPage = new TrackPage(this.parent, data);
-        // productPage.render();
+        const cardId = e.currentTarget.dataset.id;
+        const productPage = new TrackPage(this.parent,cardId);
+        productPage.render();
     }
 
     deleteTrackCard(e) {
-        // const cardId = e.currentTarget.dataset.id;
-        // track_data = track_data.filter(item => item.id !== cardId);
+        ajax.delete(trackUrls.removeTrackById(e.target.dataset.id), () => {this.render();})
+    }
+
+    addTrackCard() {
+        // let newSong = {...track_data[0]};
+        // newSong.id = (track_data.length + 1);
+        // track_data.push(newSong);
+        // this.render();
+        // this.reassignIds();
+    }
+
+    sortTracksByName() {
+        // if (this.sort_status !== 2) {
+        //     track_data = track_data.sort((a, b) => a.title.localeCompare(b.title));
+        //     this.sort_status = 2;
+        // } else {
+        //     track_data = track_data.sort((a, b) => -a.title.localeCompare(b.title));
+        //     this.sort_status = 1;
+        // }
         // this.reassignIds();
         // this.render();
     }
 
-    addTrackCard() {
-        let newSong = {...track_data[0]};
-        newSong.id = "cover_" + (track_data.length + 1).toString();
-        track_data.push(newSong);
-        this.render();
-        this.reassignIds();
-    }
-
-    sortTracksByName() {
-        if (this.sort_status !== 2) {
-            track_data = track_data.sort((a, b) => a.title.localeCompare(b.title));
-            this.sort_status = 2;
-        } else {
-            track_data = track_data.sort((a, b) => -a.title.localeCompare(b.title));
-            this.sort_status = 1;
-        }
-        this.reassignIds();
-        this.render();
-    }
-
     reassignIds() {
-        track_data.forEach((item, index) => {
-            item.id = "cover_" + (index + 1).toString();
-        });
+        // track_data.forEach((item, index) => {
+        //     item.id = (index + 1);
+        // });
     }
 
     render() {
+        console.log("Starting HP render...");
         this.parent.innerHTML = '';
         const html = this.getHTML();
         this.parent.insertAdjacentHTML('beforeend', html);
@@ -189,74 +138,15 @@ getHTML() {
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', () => this.filterTracksBySearch());
 
-        const toggleAnagramsCheckbox = document.getElementById('toggle-anagrams');
-        toggleAnagramsCheckbox.addEventListener('change', () => this.toggleAnagramsVisibility());
-
-        const sortTracksButton = new SortButtonComponent(this.pageRoot);
-        sortTracksButton.render(this.sortTracksByName.bind(this));
-
-        const anagramTracksGroupContainer = this.parent.querySelector('.anagram-info');
-        if (anagramTracksGroupContainer) {
-            this.showTrackAnagramGroups(anagramTracksGroupContainer);
-        }
-
         const addTrackButton = new AddButtonComponent(this.pageRoot);
         addTrackButton.render(this.addTrackCard.bind(this));
 
-        const popularities = this.getData().map(item => item.popularity);
-
-        const sumSquares = TrackUtils.sumOfSquares(popularities);
-        const { sum, mult } = TrackUtils.getSumAndMultOfArray(popularities);
-        document.getElementById('sum-squares').textContent = sumSquares;
-        document.getElementById('sum-mult').textContent = `Сумма: ${sum}, Произведение: ${mult}`;
-
-        const matrix = TrackUtils.createSquareMatrix(popularities);
-        if (matrix) {
-            const diagSum = TrackUtils.diagonalSum(matrix);
-            document.getElementById('matrix-size').textContent = `${matrix.length}×${matrix.length}`;
-            document.getElementById('matrix-values').textContent = JSON.stringify(matrix).replace(/,/g, ', ');
-            document.getElementById('diagonal-sum').textContent = diagSum;
-        } else {
-            document.getElementById('matrix-info').style.display = 'none';
-        }
+    
 
         this.restoreAllTracks();
+        console.log("HP render done...");
     }
 
-    showTrackAnagramGroups(container) {
-        const trackTitles = this.getData().map(track => track.title);
-        const anagramGroups = TrackUtils.findAnagramGroups(trackTitles);
-        TrackUtils.renderAnagramGroups(container, anagramGroups, () => this.filterTracksByAnagrams());
-    }
-
-    filterTracksByAnagrams() {
-        const container = this.parent.querySelector('.anagram-info');
-        const selectedKeys = TrackUtils.getSelectedKeys(container);
-        const filteredTracks = TrackUtils.filterByAnagramKeys(track_data, selectedKeys);
-        const gallery = this.parent.querySelector('.gallery');
-        gallery.innerHTML = '';
-        if (filteredTracks.length > 0) {
-            filteredTracks.forEach(item => {
-                const trackCard = new TrackCardComponent(gallery);
-                trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
-            });
-        } else {
-            gallery.innerHTML = '<p>Нет треков для отображения.</p>';
-        }
-    }
-
-    toggleAnagramsVisibility() {
-        const toggleCheckbox = document.getElementById('toggle-anagrams');
-        const container = this.parent.querySelector('.anagram-info');
-
-        if (!toggleCheckbox.checked) {
-            container.style.display = 'none';
-            this.restoreAllTracks();
-        } else {
-            container.style.display = 'block';
-            this.filterTracksByAnagrams();
-        }
-    }
 
     filterTracksBySearch() {
         const query = document.getElementById('search-input').value.toLowerCase().trim();
@@ -277,11 +167,12 @@ getHTML() {
     }
 
     restoreAllTracks() {
-        const gallery = this.parent.querySelector('.gallery');
-        gallery.innerHTML = '';
-        this.getData().forEach(item => {
-            const trackCard = new TrackCardComponent(gallery);
-            trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
-        });
+        // const gallery = this.parent.querySelector('.gallery');
+        // gallery.innerHTML = '';
+        // this.getData().forEach(item => {
+        //     const trackCard = new TrackCardComponent(gallery);
+        //     trackCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this));
+        // });
+        this.getData();
     }
 }

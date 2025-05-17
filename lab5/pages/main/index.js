@@ -2,6 +2,7 @@ import { TrackCardComponent } from "../../components/track-card/index.js";
 import { AddButtonComponent } from "../../components/add-button/index.js";
 import { SortButtonComponent } from "../../components/sort-button/index.js";
 import { TrackPage } from "../product/index.js";
+import { EditTrackPage } from "../edit/index.js";
 import { TrackUtils } from "../../components/utils/index.js"; // Импорт обновлённого класса
 import {ajax} from "../../modules/ajax.js";
 import {trackUrls} from "../../modules/trackUrls.js";
@@ -17,57 +18,58 @@ export class MainPage {
     get pageRoot() {
         return document.getElementById('main-page');
     }
-getHTML() {
-    return `
-        <div id="main-page" style="
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #121212;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        ">
-            <div class="search-container" style="margin-bottom: 30px;">
-                <div style="
-                    position: relative;
-                    width: 100%;
-                ">
-                    <svg style="
-                        position: absolute;
-                        left: 15px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        fill: #b3b3b3;
-                        width: 20px;
-                        height: 20px;
-                    " viewBox="0 0 24 24">
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                    </svg>
-                    <input type="text" id="search-input" placeholder="Поиск по названию трека..." style="
+
+    getHTML() {
+        return `
+            <div id="main-page" style="
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #121212;
+                color: #ffffff;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            ">
+                <div class="search-container" style="margin-bottom: 30px;">
+                    <div style="
+                        position: relative;
                         width: 100%;
-                        padding: 12px 40px 12px 45px; 
-                        border: none;
-                        border-radius: 30px;
-                        background-color: #282828; 
-                        color: #ffffff; 
-                        font-size: 16px;
-                        outline: none; 
-                        transition: background-color 0.3s;
-                    " onfocus="this.style.backgroundColor = '#333';" onblur="this.style.backgroundColor = '#282828'">
+                    ">
+                        <svg style="
+                            position: absolute;
+                            left: 15px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            fill: #b3b3b3;
+                            width: 20px;
+                            height: 20px;
+                        " viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" id="search-input" placeholder="Поиск по названию трека..." style="
+                            width: 100%;
+                            padding: 12px 40px 12px 45px; 
+                            border: none;
+                            border-radius: 30px;
+                            background-color: #282828; 
+                            color: #ffffff; 
+                            font-size: 16px;
+                            outline: none; 
+                            transition: background-color 0.3s;
+                        " onfocus="this.style.backgroundColor = '#333';" onblur="this.style.backgroundColor = '#282828'">
+                    </div>
                 </div>
+
+                <!-- Контейнер для треков -->
+                <div class="gallery" style="display: flex; flex-wrap: wrap;"></div>
+
+
+                </div>
+
             </div>
 
-            <!-- Контейнер для треков -->
-            <div class="gallery" style="display: flex; flex-wrap: wrap;"></div>
-
-
-            </div>
-
-        </div>
-
-     
-    `;
-}
+        
+        `;
+    }
 
     getData() {
         console.log("Fetching data...");
@@ -89,26 +91,34 @@ getHTML() {
     renderData(items) {
         items.forEach((item) => {
             const productCard = new TrackCardComponent(this.pageRoot)
-            productCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this))
+            productCard.render(item, this.clickTrackCard.bind(this), this.deleteTrackCard.bind(this), this.editTrackCard.bind(this))
         })
     }
 
     clickTrackCard(e) {
         const cardId = e.currentTarget.dataset.id;
+        console.log(cardId);
         const productPage = new TrackPage(this.parent,cardId);
         productPage.render();
     }
 
     deleteTrackCard(e) {
-        ajax.delete(trackUrls.removeTrackById(e.target.dataset.id), () => {this.render();})
+        const cardId = e.currentTarget.dataset.id;
+        console.log(cardId);
+        ajax.delete(trackUrls.removeTrackById(cardId), () => {this.render();})
+    }
+
+    editTrackCard(e) 
+    {
+        const cardId = e.currentTarget.dataset.id;
+        console.log(cardId);
+        const editTrackPage = new EditTrackPage(this.pageRoot,cardId);
+        editTrackPage.render();
     }
 
     addTrackCard() {
-        // let newSong = {...track_data[0]};
-        // newSong.id = (track_data.length + 1);
-        // track_data.push(newSong);
-        // this.render();
-        // this.reassignIds();
+        const editTrackPage = new EditTrackPage(this.pageRoot,-1);
+        editTrackPage.render();
     }
 
     sortTracksByName() {

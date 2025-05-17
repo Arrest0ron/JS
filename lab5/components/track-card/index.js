@@ -115,7 +115,7 @@ export class TrackCardComponent {
                 <div style="display: flex; gap: 8px; margin-left: 10px;">
     
 
-                    <button id="edit_${data.id}" style="
+                    <button id="edit_${data.id}"  data-id="${data.id}" style="
                         width: 28px;
                         height: 28px;
                         background-color: rgba(255, 255, 255, 0.1);
@@ -169,18 +169,21 @@ export class TrackCardComponent {
         `;
     }
 
-    addListeners(data, listener, deletor) {
+    addListeners(data, listener, deletor, editor) {
         document
             .getElementById(`view_${data.id}`)
             .addEventListener("click", listener)
         document
             .getElementById(`delete_${data.id}`)
             .addEventListener("click", deletor)
+        document
+            .getElementById(`edit_${data.id}`)
+            .addEventListener("click", editor)
     }
 
-    render(data, onClick, onDelete) {
+    render(data, onClick, onDelete, onEdit) {
         const html = this.getHTML(data);
         this.parent.insertAdjacentHTML('beforeend', html);
-        this.addListeners(data, onClick, onDelete);
+        this.addListeners(data, onClick, onDelete, onEdit);
     }
 }

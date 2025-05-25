@@ -18,15 +18,19 @@ export class TracksService {
         )
       : tracks;
   }
-
-  create(createTrackDto: CreateTrackDto) {
+create(createTrackDto: CreateTrackDto) {
     const tracks = this.fileService.read();
 
-    // для простоты новый id = текущее количество карточек + 1
-    const track = { ...createTrackDto, id: tracks.length + 1 };
+    // Найди максимальный id среди всех треков
+    const maxId = tracks.reduce((max, track) => {
+        return track.id > max ? track.id : max;
+    }, 0);
+
+    // Создай новый трек с уникальным id
+    const track = { ...createTrackDto, id: maxId + 1 };
 
     this.fileService.add(track);
-  }
+}
 
   findOne(id: number): Track | null {
     const tracks = this.fileService.read();
